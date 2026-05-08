@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root { --pink: #ff7495; --bg: #fcf6f7; --dark: #1a1a1a; }
+        body { background-color: var(--bg); margin: 0; font-family: sans-serif; height: 100vh; overflow: hidden; }
+        
+        /* Layout Grid Utama */
+        .container { 
+            display: grid; 
+            grid-template-columns: 85px 1fr 145px; 
+            height: 100vh; 
+            padding: 10px; 
+            box-sizing: border-box;
+            gap: 10px;
+        }
+
+        /* Sidebar Filter */
+        .sidebar { background: white; border-radius: 15px; padding: 10px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow-y: auto; }
+        .filt-item { margin-bottom: 12px; cursor: pointer; text-align: center; width: 100%; }
+        .filt-circle { width: 45px; height: 45px; border-radius: 12px; border: 2px solid #eee; margin: 0 auto 4px auto; transition: 0.3s; }
+        .filt-item.active .filt-circle { border-color: var(--pink); box-shadow: 0 0 8px var(--pink); }
+        .filt-item span { font-size: 9px; color: #888; font-weight: bold; }
+
+        /* Area Kamera Tengah */
+        .main-area { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .logo-box { text-align: center; margin-bottom: 8px; }
+        .logo-txt { font-size: 24px; font-weight: bold; font-family: cursive; margin: 0; }
+        .heart-red { color: #ff0000; font-size: 24px; }
+        .sub-txt { font-size: 10px; color: #999; margin: 0; }
+
+        .cam-frame {
+            position: relative; width: 100%; aspect-ratio: 4/3;
+            background: var(--dark); padding: 22px; border-radius: 25px;
+            box-sizing: border-box; display: flex; align-items: center; justify-content: center;
+        }
+        #vid_final { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; background: #222; transform: scaleX(-1); }
+
+        .controls { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+        .btn-side { background: white; border: 1px solid #eee; padding: 8px; border-radius: 10px; font-size: 9px; font-weight: bold; cursor: pointer; min-width: 65px; }
+        .shutter-btn { width: 65px; height: 65px; border: 4px solid var(--pink); border-radius: 50%; padding: 4px; cursor: pointer; background: white; }
+        .shutter-in { width: 100%; height: 100%; background: var(--pink); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+
+        /* Area Hasil Strip Foto */
+        .result-side { background: white; border-radius: 15px; padding: 10px; display: flex; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .strip-black { 
+            background: var(--dark); padding: 10px; border-radius: 4px; 
+            display: flex; flex-direction: column; gap: 6px; flex-grow: 1; overflow-y: auto;
+        }
+        .strip-black img { width: 100%; border: 1px solid #333; }
+        .deco-txt { color: white; font-size: 8px; text-align: center; margin-top: 10px; font-family: serif; opacity: 0.8; }
+
+        .save-btn { background: var(--pink); color: white; border: none; padding: 12px; border-radius: 10px; margin-top: 10px; font-weight: bold; font-size: 11px; cursor: pointer; display: none; }
+
+        #timer_val { position: absolute; font-size: 80px; color: white; font-weight: bold; z-index: 10; text-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Filter -->
+    <div class="sidebar">
+        <p style="font-size: 8px; font-weight: bold; margin-bottom: 10px;">PILIH FILTER</p>
+        <div class="filt-item active" onclick="setFilter('none', this)">
+            <div class="filt-circle" style="background:#ddd"></div><span>Normal</span>
+        </div>
+        <div class="filt-item" onclick="setFilter('sepia(0.4) saturate(1.2) brightness(1.1)', this)">
+            <div class="filt-circle" style="background:#e3c4a8"></div><span>Hangat</span>
+        </div>
+        <div class="filt-item" onclick="setFilter('grayscale(1) contrast(1.1)', this)">
+            <div class="filt-circle" style="background:#bbb"></div><span>Vintage</span>
+        </div>
+        <div class="filt-item" onclick="setFilter('hue-rotate(180deg) saturate(0.8) brightness(1.1)', this)">
+            <div class="filt-circle" style="background:#a8d5e3"></div><span>Dingin</span>
+        </div>
+    </div>
+
+    <!-- Area Kamera -->
+    <div class="main-area">
+        <div class="logo-box">
+            <h1 class="logo-txt">Photo Booth <span class="heart-red">❤️</span></h1>
+            <p class="sub-txt">✨ Abadikan momen terbaikmu! ✨</p>
+        </div>
+        <div class="cam-frame">
+            <div id="timer_val">3</div>
+            <video id="vid_final" autoplay playsinline muted></video>
+        </div>
+        <div class="controls">
+            <button class="btn-side" onclick="switchCamera()">🔄 Balik Kamera</button>
+            <div class="shutter-btn" onclick="captureSequence()">
+                <div class="shutter-in">📸</div>
+            </div>
+            <button class="btn-side" onclick="resetApp()">⏱️ Mulai Ulang</button>
+        </div>
+    </div>
+
+    <!-- Area Hasil -->
+    <div class="result-side">
+        <p style="font-size: 9px; font-weight: bold; text-align: center; margin-bottom: 10px;">HASIL FOTO (0/4)</p>
+        <div class="strip-black" id="photo_strip">
+            <div id="status_msg" style="color:#555; font-size: 9px; text-align: center; margin-top: 50px;">Siap foto?</div>
+        </div>
+        <button id="download_btn" class="save-btn" onclick="downloadImage()">📥 Simpan</button>
+    </div>
+</div>
+
+<canvas id="proc_canvas" style="display:none;"></canvas>
+<canvas id="final_canvas" style="display:none;"></canvas>
+
+<script>
+    const video = document.getElementById('vid_final');
+    const stripBox = document.getElementById('photo_strip');
+    const timerDisplay = document.getElementById('timer_val');
+    const downloadBtn = document.getElementById('download_btn');
+    const pCanvas = document.getElementById('proc_canvas');
+    const fCanvas = document.getElementById('final_canvas');
+
+    let useFront = true;
+    let currentFilter = 'none';
+    let capturedPhotos = [];
+
+    // Fungsi otomatis meminta izin kamera
+    async function startCamera() {
+        try {
+            if (window.stream) {
+                window.stream.getTracks().forEach(track => track.stop());
+            }
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: useFront ? "user" : "environment" } 
+            });
+            window.stream = stream;
+            video.srcObject = stream;
+        } catch (err) {
+            alert("Gagal mengakses kamera. Mohon izinkan akses kamera pada browser Anda.");
+        }
+    }
+
+    function switchCamera() {
+        useFront = !useFront;
+        video.style.transform = useFront ? "scaleX(-1)" : "scaleX(1)";
+        startCamera();
+    }
+
+    function setFilter(filterStr, element) {
+        currentFilter = filterStr;
+        video.style.filter = filterStr;
+        document.querySelectorAll('.filt-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    async function captureSequence() {
+        stripBox.innerHTML = '';
+        capturedPhotos = [];
+        downloadBtn.style.display = 'none';
+        
+        for (let i = 0; i < 4; i++) {
+            await new Promise(resolve => {
+                timerDisplay.style.display = 'block';
+                let count = 3;
+                timerDisplay.innerText = count;
+                let interval = setInterval(() => {
+                    count--;
+                    if (count > 0) {
+                        timerDisplay.innerText = count;
+                    } else {
+                        clearInterval(interval);
+                        timerDisplay.style.display = 'none';
+                        resolve();
+                    }
+                }, 1000);
+            });
+
+            const ctx = pCanvas.getContext('2d');
+            pCanvas.width = video.videoWidth;
+            pCanvas.height = video.videoHeight;
+            
+            if (useFront) {
+                ctx.translate(pCanvas.width, 0);
+                ctx.scale(-1, 1);
+            }
+            
+            ctx.filter = currentFilter;
+            ctx.drawImage(video, 0, 0);
+            
+            const imageData = pCanvas.toDataURL('image/jpeg', 0.9);
+            capturedPhotos.push(imageData);
+            
+            const imgEl = document.createElement('img');
+            imgEl.src = imageData;
+            stripBox.appendChild(imgEl);
+        }
+
+        const decoration = document.createElement('div');
+        decoration.className = 'deco-txt';
+        decoration.innerHTML = "♥ GOOD VIBES ♥<br>2026 PHOTO BOOTH";
+        stripBox.appendChild(decoration);
+        downloadBtn.style.display = 'block';
+    }
+
+    function downloadImage() {
+        const ctxF = fCanvas.getContext('2d');
+        const photoW = 400;
+        const photoH = 300;
+        const padding = 20;
+        const footerSpace = 80;
+
+        fCanvas.width = photoW + (padding * 2);
+        fCanvas.height = (photoH * 4) + (padding * 5) + footerSpace;
+
+        ctxF.fillStyle = "#1a1a1a";
+        ctxF.fillRect(0, 0, fCanvas.width, fCanvas.height);
+
+        let loadedCount = 0;
+        capturedPhotos.forEach((src, index) => {
+            const img = new Image();
+            img.src = src;
+            img.onload = () => {
+                ctxF.drawImage(img, padding, padding + (index * (photoH + padding)), photoW, photoH);
+                loadedCount++;
+                if (loadedCount === 4) {
+                    ctxF.fillStyle = "white";
+                    ctxF.font = "bold 20px serif";
+                    ctxF.textAlign = "center";
+                    ctxF.fillText("♥ GOOD VIBES ♥", fCanvas.width / 2, fCanvas.height - 40);
+                    
+                    const link = document.createElement('a');
+                    link.download = 'Nazril-PhotoBooth.jpg';
+                    link.href = fCanvas.toDataURL('image/jpeg', 1.0);
+                    link.click();
+                }
+            };
+        });
+    }
+
+    function resetApp() {
+        stripBox.innerHTML = '<div style="color:#555; font-size: 9px; text-align: center; margin-top: 50px;">Siap foto?</div>';
+        downloadBtn.style.display = 'none';
+        capturedPhotos = [];
+    }
+
+    // Jalankan kamera saat halaman dimuat
+    startCamera();
+</script>
+</body>
+</html>
