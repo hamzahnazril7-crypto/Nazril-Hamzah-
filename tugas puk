@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>CV Web</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #e6e6e6;
+}
+
+/* container utama */
+.wrapper {
+  max-width: 1100px;
+  margin: 30px auto;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* KIRI */
+.left {
+  width: 70%;
+  background: #2f2f2f;
+  color: #fff;
+  padding: 40px 30px;
+}
+
+/* foto */
+.photo {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 30px;
+  border: 10px solid #444;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* judul section kiri */
+.left-title {
+  background: #fff;
+  color: #000;
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 15px;
+  font-weight: bold;
+  margin: 25px 0 10px;
+}
+
+.left p, .left li {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* KANAN */
+.right {
+  width: 100%;
+  background: #f3f3f3;
+  padding: 10px;
+  color: #333;
+}
+
+/* nama */
+.name {
+  font-size: 45px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.job {
+  font-style: italic;
+  margin-bottom: 50px;
+}
+
+.line {
+  height: 3px;
+  width: 300px;
+  background: #333;
+  margin-bottom: 10x;
+}
+
+/* judul kanan */
+.right-title {
+  background: #333;
+  color: #fff;
+  display: inline-block;
+  padding: 8px 75px;
+  border-radius: 15px;
+  margin: 100px 0 10px;
+  font-weight: bold;
+}
+
+.right p, .right li {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* list */
+ul {
+  padding-left: 20x;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  
+  <div class="left">
+
+    <div class="photo">
+      <img src="https://hips.hearstapps.com/hmg-prod/images/elon-musk-gettyimages-2147789844-web-675b2c17301ea.jpg">
+    </div>
+
+    <div class="left-title">PENDIDIKAN</div>
+    <p>
+      <b>S1 dalam bidang ekonomi dan S1 kedua dalam bidang fisika
+    </p>
+
+    <div class="left-title">PENGHARGAAN</div>
+    <p>
+      Terdaftar sebagai satu dari 100 tokoh yang paling berpengaruh tahun 2010 versi Time Magazine.<br>
+      Satu dari 75 tokoh paling berpengaruh abad ke-21 versi majalah Esquire.
+      <br> DAN MASIH BANYAK LAGI
+    </p>
+
+    <div class="left-title">EKONOMI</div>
+    <p>
+      <br>Elon Musk adalah orang terkaya di dunia, dengan perkiraan kekayaan bersih mencapai US$470 miliar per Oktober 2025 menurut Bloomberg Billionaires Index, dan US$500 miliar menurut Forbes.
+     <br> Sebagian besar kekayaannya berasal dari kepemilikan saham di Tesla dan SpaceX.
+    </p>
+
+  </div>
+
+ 
+  <div class="right">
+
+    <h1 class="name">Elon Reeve Musk</h1>
+    <div class="job">Elon Reeve Musk lahir 28 Juni 1971 adalah seorang pebisnis Amerika Serikat. Dia terkenal karena ikut mendirikan SpaceX, Tesla, The Boring Company, Neuralink, dan OpenAI. Dengan pendapatan mencapai US$240 miliar (menurut Forbes pada 2022), dia masuk sebagai orang terkaya di dunia menurut Bloomberg Biilionaires Index dan Forbe</div>
+    <div class="line"></div>
+
+    <p>
+      Setelah mengikuti kuliah perdagangan di Queen's School of Business selama dua tahun, Elon Musk mendapatkan gelar sarjana ekonomi dari The Wharton School of the University of Pennsylvania dan sarjana fisika.     Melanjutkan Studi Ph.D.
+    </p>
+
+    <div class="right-title"> Masa kecil</div>
+    <p> Sejak kecil, Elon sangat senang membaca dan belajar. Pada usia 10 tahun, ia mulai tertarik dengan mempelajari teknik komputer. Pada usia 12 tahun, ia belajar pemrograman dan berhasil membuat serta menjual kode komputer pada majalah komputer untuk sebuah game yang ia beri nama Blastar dengan harga $500. </p>
+
+    <div class="right-title">Keluarga</div>
+    
+    <p> Musk tinggal di Bel Air, Los Angeles, California. Musk bertemu istri pertamanya, penulis asal Kanada Justine Musk, ketika masih kuliah di Queen's University. Mereka menikah tahun 2000. Mereka menyatakan bercerai pada September 2008. Pada Januari 2012, Musk mengumumkan bahwa ia mengakhiri hubungannya selama empat tahun dengan istri keduanya, aktris asal Britania Raya Talulah Riley.  </p>
+  </div>
+
+</div>
+
+</body>
+</html>
